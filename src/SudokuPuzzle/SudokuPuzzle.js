@@ -1,6 +1,9 @@
 import { getSingleBoard } from './board';
 
 export default class SudokuPuzzle {
+  // assumption that sudoku board is 9x9
+  BOX_SIZE = 3;
+
   /**
    * a means of populating the game board
    */
@@ -19,18 +22,19 @@ export default class SudokuPuzzle {
   check = () => {
     this.unsolved = 0;
 
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        const row = this.board[i * 3 + j];
-        const col = this.board.map(row => row[i * 3 + j]);
-        const box = this.getBox(i * 3, j * 3);
+    for (let i = 0; i < this.BOX_SIZE; i++) {
+      for (let j = 0; j < this.BOX_SIZE; j++) {
+        const collections = [
+          this.getRow(i * this.BOX_SIZE + j),
+          this.getCol(i * this.BOX_SIZE + j),
+          this.getBox(i * this.BOX_SIZE, j * this.BOX_SIZE)
+        ];
 
-        for (let list of [row, col, box]) {
+        for (let list of collections) {
           const filteredList = list.filter(item => item !== 0);
           this.unsolved += list.length - filteredList.length;
 
-          const set = new Set(filteredList);
-          if (set.size !== filteredList.length) {
+          if (this.hasDuplicate(filteredList)) {
             return false;
           }
         }
@@ -40,11 +44,20 @@ export default class SudokuPuzzle {
     return true;
   };
 
+  hasDuplicate = list => {
+    const set = new Set(list);
+    return set.size !== list.length;
+  }
+
+  getRow = rowIndex => this.board[rowIndex];
+
+  getCol = colIndex => this.board.map(row => row[colIndex]);
+
   getBox(rowIndex, colIndex) {
-    let startRow = Math.floor(rowIndex / 3) * 3;
-    let startCol = Math.floor(colIndex / 3) * 3;
-    const endRow = startRow + 3;
-    const endCol = startCol + 3;
+    let startRow = Math.floor(rowIndex / this.BOX_SIZE) * this.BOX_SIZE;
+    let startCol = Math.floor(colIndex / this.BOX_SIZE) * this.BOX_SIZE;
+    const endRow = this.BOX_SIZE + startRow;
+    const endCol = this.BOX_SIZE + startCol;
 
     const box = [];
     for (let i = startRow; i < endRow; i++) {
