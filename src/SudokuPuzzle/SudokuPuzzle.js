@@ -16,7 +16,43 @@ export default class SudokuPuzzle {
   /**
    * a player should be able to submit the puzzle at any time to have their progress checked
    */
-  check = () => {};
+  check = () => {
+    this.unsolved = 0;
+
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        const row = this.board[i * 3 + j];
+        const col = this.board.map(row => row[i * 3 + j]);
+        const box = this.getBox(i * 3, j * 3);
+
+        for (let list of [row, col, box]) {
+          const filteredList = list.filter(item => item !== 0);
+          this.unsolved += list.length - filteredList.length;
+
+          const set = new Set(filteredList);
+          if (set.size !== filteredList.length) {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
+  };
+
+  getBox(rowIndex, colIndex) {
+    let startRow = Math.floor(rowIndex / 3) * 3;
+    let startCol = Math.floor(colIndex / 3) * 3;
+    const endRow = startRow + 3;
+    const endCol = startCol + 3;
+
+    const box = [];
+    for (let i = startRow; i < endRow; i++) {
+      Array.prototype.push.apply(box, this.board[i].slice(startCol, endCol));
+    }
+
+    return box;
+  }
 
   /**
    * a player should be able to give up on the puzzle and have the solution revealed
