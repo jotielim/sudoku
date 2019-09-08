@@ -1,8 +1,12 @@
+import { getSingleBoard } from './board';
+
 export default class SudokuPuzzle {
   /**
    * a means of populating the game board
    */
-  setupBoard = () => {};
+  setupBoard = () => {
+    this.board = getSingleBoard();
+  };
 
   /**
    * a means of checking the board to see if the puzzle has been successfully completed
