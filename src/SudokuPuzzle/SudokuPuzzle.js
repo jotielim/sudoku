@@ -14,7 +14,9 @@ export default class SudokuPuzzle {
   /**
    * a means of checking the board to see if the puzzle has been successfully completed
    */
-  checkBoard = () => {};
+  checkBoard = () => {
+    return this.check() && this.unsolved === 0;
+  };
 
   /**
    * a player should be able to submit the puzzle at any time to have their progress checked
