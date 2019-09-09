@@ -165,5 +165,16 @@ describe('SudokuPuzzle', () => {
     });
   });
 
-  describe('restart', () => {});
+  describe('restart', () => {
+    it('should restart the puzzle', () => {
+      puzzle.setupBoard();
+      const prevBoard = puzzle.board.map(row => row.map(item => item));
+
+      puzzle.solve();
+      expect(puzzle.board).not.toEqual(prevBoard);
+
+      puzzle.restart();
+      expect(puzzle.board).toEqual(prevBoard);
+    });
+  });
 });

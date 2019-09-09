@@ -118,5 +118,7 @@ export default class SudokuPuzzle {
    * the board to the original state if you’ve implemented a single board, and should
    * reset the board to an entirely new board if you’ve implemented a board generator
    */
-  restart = () => {};
+  restart = () => {
+    this.setupBoard();
+  };
 }
