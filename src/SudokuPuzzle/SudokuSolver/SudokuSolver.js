@@ -116,6 +116,11 @@ export default class SudokuSolver {
     this.board[rowIndex][colIndex] = value;
   };
 
+  isCellValid = (rowIndex, colIndex) => {
+    const key = `${rowIndex}${colIndex}`;
+    return this.cellMap.get(key).isValid();
+  }
+
   isValid() {
     return this.cells.every(cell => cell.isValid());
   }
@@ -162,6 +167,10 @@ export default class SudokuSolver {
   };
 
   solve = () => {
+    // if (this.solved) {
+    //   return this.board;
+    // }
+
     let pos = 0;
     let cell = this.cells[pos];
     while (cell !== undefined && pos >= 0) {
@@ -173,6 +182,7 @@ export default class SudokuSolver {
       throw new Error('Unable to find solution');
     }
 
+    // this.solved = true;
     return this.board;
   };
 }

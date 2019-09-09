@@ -1,0 +1,26 @@
+.cell {
+  border: 0;
+}
+
+.cell input {
+  border: 1px solid #ccc;
+  line-height: 20px;
+  width: 100%;
+  width: 25px;
+}
+
+.readonly input {
+  background-color: #ddd;
+}
+
+.error input {
+  background-color: #f09090;
+}
+
+.btnGroup {
+  padding-top: 10px;
+}
+
+.btnGroup button {
+  margin: 0 5px;
+}
