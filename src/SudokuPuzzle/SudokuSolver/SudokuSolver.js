@@ -14,12 +14,6 @@ class Cell {
     this.possibleSolutions = this.editable
         ? this.getPossibleSolutions(rowIndex, colIndex)
         : [];
-
-    // Freebie. Only have 1 possible solution
-    if (this.possibleSolutions.length === 1) {
-      this.solved = true;
-      this.value = this.possibleSolutions[this.stateIndex];
-    }
   }
 
   getPossibleSolutions = (rowIndex, colIndex) => {
@@ -49,13 +43,7 @@ class Cell {
   }
 
   isValid = () => {
-    const { board, rowIndex, colIndex, boxSize } = this;
-    const collections = [
-      [...getRow(board, rowIndex), this.value],
-      [...getCol(board, colIndex), this.value],
-      [...getBox(board, rowIndex, colIndex, boxSize), this.value]
-    ];
-
+    const collections = this._getCollections();
     return this._isValid(collections);
   };
 
@@ -104,35 +92,37 @@ export default class SudokuSolver {
     this.board = board;
     this.boxSize = boxSize;
 
-    const { solved, unsolved } = this.getCells(board, boxSize);
-    // Update the board with the freebies
-    solved.forEach(cell => {
-      this.board[cell.rowIndex][cell.colIndex] = cell.value;
-    });
-    // unsolved cells to find solutions
-    this.cells = unsolved;
+    this.cellMap = this.getCellMap(board, boxSize);
+    this.cells = [...this.cellMap.values()];
   }
 
-  getCells = (board, boxSize) => {
-    const solved = [];
-    const unsolved = [];
+  getCellMap = (board, boxSize) => {
+    const cells = new Map();
     for (const [rowIndex, row] of board.entries()) {
       for (const [colIndex, value] of row.entries()) {
         if (value === 0) {
           const cell = new Cell(board, rowIndex, colIndex, value, boxSize);
-          if (cell.solved) {
-            solved.push(cell);
-          } else {
-            unsolved.push(cell);
-          }
+          cells.set(`${rowIndex}${colIndex}`, cell);
         }
       }
     }
-    return {
-      solved,
-      unsolved
-    };
+    return cells;
   };
+
+  setCellValue = (rowIndex, colIndex, value) => {
+    const key = `${rowIndex}${colIndex}`;
+    const cell = this.cellMap.get(key);
+    cell.value = value;
+    this.board[rowIndex][colIndex] = value;
+  };
+
+  isValid() {
+    return this.cells.every(cell => cell.isValid());
+  }
+
+  isSolved() {
+    return this.cells.every(cell => (cell.isValid() && cell.value !== 0));
+  }
 
   backtrack = (cell, pos) => {
     // reset this cell and board value

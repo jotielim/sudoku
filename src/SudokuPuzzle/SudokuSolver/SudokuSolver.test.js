@@ -1,12 +1,83 @@
 import SudokuSolver from './SudokuSolver';
 
 describe('SudokuSolver', () => {
-  describe('solve', () => {
-    let board;
-    let solution;
-    let sudoku;
-    let result;
+  let board;
+  let sudoku;
+  let result;
 
+  describe('setCellValue', () => {
+    beforeEach(() => {
+      board = [
+        [5, 3, 0, 0, 7, 0, 0, 0, 0],
+        [6, 0, 0, 1, 9, 5, 0, 0, 0],
+        [0, 9, 8, 0, 0, 0, 0, 6, 0],
+        [8, 0, 0, 0, 6, 0, 0, 0, 3],
+        [4, 0, 0, 8, 0, 3, 0, 0, 1],
+        [7, 0, 0, 0, 2, 0, 0, 0, 6],
+        [0, 6, 0, 0, 0, 0, 2, 8, 0],
+        [0, 0, 0, 4, 1, 9, 0, 0, 5],
+        [0, 0, 0, 0, 8, 0, 0, 7, 9]
+      ];
+    });
+
+    it('should set the cell value of the board', () => {
+      sudoku = new SudokuSolver(board);
+      sudoku.setCellValue(1, 6, 4);
+      expect(sudoku.board).toEqual([
+        [5, 3, 0, 0, 7, 0, 0, 0, 0],
+        [6, 0, 0, 1, 9, 5, 4, 0, 0],
+        [0, 9, 8, 0, 0, 0, 0, 6, 0],
+        [8, 0, 0, 0, 6, 0, 0, 0, 3],
+        [4, 0, 0, 8, 0, 3, 0, 0, 1],
+        [7, 0, 0, 0, 2, 0, 0, 0, 6],
+        [0, 6, 0, 0, 0, 0, 2, 8, 0],
+        [0, 0, 0, 4, 1, 9, 0, 0, 5],
+        [0, 0, 0, 0, 8, 0, 0, 7, 9]
+      ]);
+    });
+  });
+
+  describe('isSolved', () => {
+    it('should return false if the puzzle is not solved', () => {
+      board = [
+        [5, 3, 4, 6, 7, 8, 9, 1, 0],
+        [6, 7, 2, 1, 9, 5, 3, 4, 8],
+        [1, 9, 8, 3, 4, 2, 5, 6, 7],
+        [8, 5, 9, 7, 6, 1, 4, 2, 3],
+        [4, 2, 6, 8, 5, 3, 7, 9, 1],
+        [7, 1, 3, 9, 2, 4, 8, 5, 6],
+        [9, 6, 1, 5, 3, 7, 2, 8, 4],
+        [2, 8, 7, 4, 1, 9, 6, 3, 5],
+        [3, 4, 5, 2, 8, 6, 1, 7, 9]
+      ];
+      sudoku = new SudokuSolver(board);
+      result = sudoku.isSolved();
+      expect(result).toBe(false);
+    });
+
+    it('should return true if the puzzle is solved', () => {
+      board = [
+        [5, 3, 4, 6, 7, 8, 9, 1, 0],
+        [6, 7, 2, 1, 9, 5, 3, 4, 8],
+        [1, 9, 8, 3, 4, 2, 5, 6, 7],
+        [8, 5, 9, 7, 6, 1, 4, 2, 3],
+        [4, 2, 6, 8, 5, 3, 7, 9, 1],
+        [7, 1, 3, 9, 2, 4, 8, 5, 6],
+        [9, 6, 1, 5, 3, 7, 2, 8, 4],
+        [2, 8, 7, 4, 1, 9, 6, 3, 5],
+        [3, 4, 5, 2, 8, 6, 1, 7, 9]
+      ];
+      sudoku = new SudokuSolver(board);
+      result = sudoku.isSolved();
+      expect(result).toBe(false);
+
+      sudoku.setCellValue(0, 8, 2);
+      result = sudoku.isSolved();
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('solve', () => {
     it('should throw an error if unable to find solution', () => {
       board = [
         [5, 3, 0, 0, 7, 0, 0, 0, 0],
@@ -36,7 +107,10 @@ describe('SudokuSolver', () => {
         [0, 0, 0, 4, 1, 9, 0, 0, 5],
         [0, 0, 0, 0, 8, 0, 0, 7, 9]
       ];
-      solution = [
+
+      sudoku = new SudokuSolver(board);
+      result = sudoku.solve();
+      expect(result).toEqual([
         [5, 3, 4, 6, 7, 8, 9, 1, 2],
         [6, 7, 2, 1, 9, 5, 3, 4, 8],
         [1, 9, 8, 3, 4, 2, 5, 6, 7],
@@ -46,11 +120,7 @@ describe('SudokuSolver', () => {
         [9, 6, 1, 5, 3, 7, 2, 8, 4],
         [2, 8, 7, 4, 1, 9, 6, 3, 5],
         [3, 4, 5, 2, 8, 6, 1, 7, 9]
-      ];
-
-      sudoku = new SudokuSolver(board);
-      result = sudoku.solve();
-      expect(result).toEqual(solution);
+      ]);
     });
 
     it('should solve the given sudoku puzzle - example 2', () => {
@@ -65,7 +135,10 @@ describe('SudokuSolver', () => {
         [0, 4, 0, 0, 5, 0, 0, 3, 6],
         [7, 0, 3, 0, 1, 8, 0, 0, 0]
       ];
-      solution = [
+
+      sudoku = new SudokuSolver(board);
+      result = sudoku.solve();
+      expect(result).toEqual([
         [4, 3, 5, 2, 6, 9, 7, 8, 1],
         [6, 8, 2, 5, 7, 1, 4, 9, 3],
         [1, 9, 7, 8, 3, 4, 5, 6, 2],
@@ -75,11 +148,7 @@ describe('SudokuSolver', () => {
         [5, 1, 9, 3, 2, 6, 8, 7, 4],
         [2, 4, 8, 9, 5, 7, 1, 3, 6],
         [7, 6, 3, 4, 1, 8, 2, 5, 9]
-      ];
-
-      sudoku = new SudokuSolver(board);
-      result = sudoku.solve();
-      expect(result).toEqual(solution);
+      ]);
     });
 
     it('should solve the given sudoku puzzle - example 3', () => {
@@ -94,7 +163,10 @@ describe('SudokuSolver', () => {
         [0, 2, 0, 0, 0, 0, 0, 3, 7],
         [8, 0, 0, 5, 1, 2, 0, 0, 4]
       ];
-      solution = [
+
+      sudoku = new SudokuSolver(board);
+      result = sudoku.solve();
+      expect(result).toEqual([
         [1, 5, 2, 4, 8, 9, 3, 7, 6],
         [7, 3, 9, 2, 5, 6, 8, 4, 1],
         [4, 6, 8, 3, 7, 1, 2, 9, 5],
@@ -104,11 +176,7 @@ describe('SudokuSolver', () => {
         [9, 1, 4, 6, 3, 7, 5, 8, 2],
         [6, 2, 5, 9, 4, 8, 1, 3, 7],
         [8, 7, 3, 5, 1, 2, 9, 6, 4]
-      ];
-
-      sudoku = new SudokuSolver(board);
-      result = sudoku.solve();
-      expect(result).toEqual(solution);
+      ]);
     });
   });
 });
