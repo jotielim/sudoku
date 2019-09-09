@@ -3,6 +3,8 @@ import { getSingleBoard } from './board';
 export default class SudokuPuzzle {
   // assumption that sudoku board is 9x9
   BOX_SIZE = 3;
+  ROW_SIZE = 9
+  COL_SIZE = 9
 
   /**
    * a means of populating the game board
@@ -69,10 +71,47 @@ export default class SudokuPuzzle {
     return box;
   }
 
+  getPossibleSolutions = (rowIndex, colIndex) => {
+    const possibilities = Array.from({ length: this.ROW_SIZE }, (_, i) => i + 1);
+    const set = new Set([
+      ...this.getRow(rowIndex),
+      ...this.getCol(colIndex),
+      ...this.getBox(rowIndex, colIndex)
+    ]);
+
+    return possibilities.reduce((result, item) => {
+      if (!set.has(item)) {
+        result.push(item);
+      }
+      return result;
+    }, []);
+  };
+
   /**
    * a player should be able to give up on the puzzle and have the solution revealed
    */
-  solve = () => {};
+  solve = () => {
+    let solved = false;
+
+    while (!solved) {
+      solved = true;
+
+      for (let i = 0; i < this.ROW_SIZE; i++) {
+        for (let j = 0; j < this.COL_SIZE; j++) {
+          const item = this.board[i][j];
+          if (item === 0) {
+            solved = false;
+            const possibleSolutions = this.getPossibleSolutions(i, j);
+            if (possibleSolutions.length === 1) {
+              this.board[i][j] = possibleSolutions[0];
+            }
+          }
+        }
+      }
+    }
+
+    return this.board;
+  };
 
   /**
    * a player should be able to restart the game at any time; restarting should reset
