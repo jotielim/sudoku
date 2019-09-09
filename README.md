@@ -1,3 +1,9 @@
+## Sudoku
+
+The game consists of the puzzle, solver, and the UI component. The game currently only implements a single board. To solve the game, a variant of depth first search algorithm is used. First, we get the first possible solution for that cell, then move to next cell. When a branch does not lead to a solution, we then back track to the previous cell and create a new branch with new possible solution. The algorithm is repeated until there is a solution found. The state of the game is currently stored in the solver instance.
+
+---
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
